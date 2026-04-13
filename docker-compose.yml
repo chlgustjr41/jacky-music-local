@@ -1,0 +1,41 @@
+services:
+  lavalink:
+    image: ghcr.io/lavalink-devs/lavalink:4
+    container_name: jacky-local-lavalink
+    restart: "no"
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -XX:+UseG1GC
+      - LAVALINK_SERVER_PASSWORD=${LAVALINK_PASSWORD}
+    volumes:
+      - ./lavalink/application.yml:/opt/Lavalink/application.yml
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf -H \"Authorization: $$LAVALINK_SERVER_PASSWORD\" http://localhost:2333/version || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: jacky-local-tunnel
+    restart: "no"
+    command: tunnel --no-autoupdate --url http://lavalink:2333
+    depends_on:
+      lavalink:
+        condition: service_healthy
+
+  watchdog:
+    build: ./watchdog
+    container_name: jacky-local-watchdog
+    restart: "no"
+    depends_on:
+      lavalink:
+        condition: service_healthy
+    environment:
+      - IDLE_TIMEOUT_MINUTES=${IDLE_TIMEOUT_MINUTES:-15}
+      - LAVALINK_HOST=lavalink
+      - LAVALINK_PORT=2333
+      - LAVALINK_PASSWORD=${LAVALINK_PASSWORD}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/compose

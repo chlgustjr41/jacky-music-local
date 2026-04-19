@@ -1,8 +1,10 @@
 # Jacky Music — Local Audio Node
 
-Run a local Lavalink audio server and connect it to the Jacky Music Discord bot for lower latency audio streaming.
+Run a local Lavalink audio server and connect it to the [Jacky Music](https://discord-bot-jacky-music.web.app/) Discord bot for lower latency audio streaming.
 
 The bot stays on the cloud — this only runs the audio engine locally so the audio stream takes a shorter path to Discord's voice servers.
+
+> **New to Jacky Music?** Visit the [Setup Guide](https://discord-bot-jacky-music.web.app/guide) to invite the bot and activate your server first.
 
 ## Supported Platforms
 
@@ -62,6 +64,10 @@ The setup script will:
 ```
 
 Paste the `j!localnode connect ...` command in your Discord server and you're done.
+
+> **Security note**: The connect command contains your password. Run it in a private or bot-only channel, or delete the message after the bot confirms the connection. The tunnel URL changes every time you restart — old Discord messages with a past URL are harmless.
+
+You can also connect via the [web dashboard](https://discord-bot-jacky-music.web.app/) — click the **Cloud** badge in the header and enter the tunnel URL and password.
 
 ## How It Works
 
